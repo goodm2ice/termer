@@ -4,7 +4,7 @@ from config import Config
 from db import prepare_db
 from ui import prepare_app
 
-PROG_DIR = Path.home().joinpath('Documents/termer')
+PROG_DIR = Path.home().joinpath('Documents/goodmice/Termer')
 PROG_DIR.mkdir(parents=True, exist_ok=True) # Создаём директории если не существуют
 DB_PATH = str(PROG_DIR.joinpath('termer_data.db'))
 CFG_PATH = str(PROG_DIR.joinpath('config.ini'))

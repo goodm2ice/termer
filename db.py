@@ -28,7 +28,7 @@ class Term(BaseModel):
 def prepare_db(db_path: str):
     path = Path(db_path)
     try:
-        with open(db_path, 'w'): # Проверка на корректность имени файла
+        with open(db_path, 'a'): # Проверка на корректность имени файла
             pass
     except OSError:
         path = path.joinpath('termer_data.db') # Добавляем имя файла в конец, если его нет

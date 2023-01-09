@@ -27,8 +27,11 @@ class Term(BaseModel):
 
 def prepare_db(db_path: str):
     path = Path(db_path)
-    if not path.is_file():
-        path = path.joinpath('termer.db') # Добавляем имя файла в конец, если его нет
+    try:
+        with open(db_path, 'w'): # Проверка на корректность имени файла
+            pass
+    except OSError:
+        path = path.joinpath('termer_data.db') # Добавляем имя файла в конец, если его нет
     path.parent.mkdir(parents=True, exist_ok=True) # Создаём папку для базы если не существует
 
     db = SqliteDatabase(str(path))

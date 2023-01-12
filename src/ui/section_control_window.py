@@ -65,8 +65,7 @@ class SectionControllWindow(ctk.CTkToplevel):
 
     def __init__(self, master, on_update, geometry = '700x600'):
         super().__init__(master)
-        if 'defaultFont' in master:
-            self.defaultFont = master.defaultFont
+        self.defaultFont = getattr(master, 'defaultFont', None)
         self.title('Termer - Окно управления разделами')
         self.geometry(geometry)
 

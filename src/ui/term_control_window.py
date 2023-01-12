@@ -11,9 +11,8 @@ from .term_list import TermList
 class TermControllWindow(ctk.CTkToplevel):
     term_list_frame = None
     selected_id: int = None
-    terms: List[Term] = []
-    sections: List[TextbookSection] = []
     term_items: List[ctk.CTkFrame] = [] # Массив элементов списка
+    image_data = None
 
     def __get_term_from_fields(self) -> Term:
         caption = self.term_caption_field.get()
@@ -59,15 +58,16 @@ class TermControllWindow(ctk.CTkToplevel):
 
     def redraw_image(self):
         if not self.image_data:
-            self.image_box.configure(True, image=None, text='Нет изображения!')
+            self.image_box.configure(image=None, text='Нет изображения!')
         else:
-            self.image_box.configure(True, image=blob_to_image(self.image_data), text='')
+            img = blob_to_image(self.image_data)
+            self.image_box.configure(image=img, text='')
 
     def redraw(self):
         terms: List[Term] = Term.select().order_by(Term.caption.desc()).execute()
         selected_term = None
         if terms and self.selected_id is not None:
-            selected_term = find(terms, lambda elm: elm.term_id == self.selected_id)
+            selected_term = find(terms, lambda elm, i, _: elm.term_id == self.selected_id)
             if not selected_term:
                 self.selected_id = None
 
@@ -82,7 +82,7 @@ class TermControllWindow(ctk.CTkToplevel):
         else:
             self.image_data = selected_term.image
             self.term_caption_field.insert(0, selected_term.caption)
-            self.description_field.insert('0.0', selected_term.description)
+            self.description_field.insert('0.0', str(selected_term.description or '').rstrip())
             try:
                 section = TextbookSection.get_by_id(selected_term.section_id)
                 self.section_box.set(section.caption)
@@ -119,11 +119,11 @@ class TermControllWindow(ctk.CTkToplevel):
         self.term_caption_field = ctk.CTkEntry(frame, placeholder_text='Название термина...', font=self.defaultFont)
 
         bottom_frame = ctk.CTkFrame(frame)
-        self.description_field = ctk.CTkTextbox(bottom_frame, font=self.defaultFont, )
+        self.description_field = ctk.CTkTextbox(bottom_frame, font=self.defaultFont)
         right_frame = ctk.CTkFrame(bottom_frame)
 
-
-        values = [section.caption for section in self.sections]
+        sections = TextbookSection.select().order_by(TextbookSection.caption.desc()).execute() or []
+        values = [section.caption for section in sections]
 
         self.section_box = ctk.CTkComboBox(right_frame, values=values, font=self.defaultFont)
         self.image_box = ctk.CTkLabel(right_frame, text='Нет изображения!', font=self.defaultFont)
@@ -144,9 +144,7 @@ class TermControllWindow(ctk.CTkToplevel):
 
     def __init__(self, master, on_update, geometry = '1000x600'):
         super().__init__(master)
-        self.sections = TextbookSection.select().order_by(TextbookSection.caption.desc()).execute() or []
-        if 'defaultFont' in master:
-            self.defaultFont = master.defaultFont
+        self.defaultFont = getattr(master, 'defaultFont', None)
         self.title('Termer - Окно управления разделами')
         self.geometry(geometry)
 

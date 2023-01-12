@@ -38,5 +38,7 @@ buildProject() {
     rm "$TMP\make_installer.nsi"
 }
 
-pyinstaller --noconfirm --onedir --distpath $TMP_APP --workpath $TMP_WP --specpath $TMP --add-data $CUSTOM_TKINTER $ENTRY_POINT --clean --noconsole
-zip $BLD_PRD $TMP_OUT
+buildProject $BLD_DBG 'debug_installer_template.nsi' true
+buildProject $BLD_PRD 'prod_installer_template.nsi' false
+
+rm -rf $TMP

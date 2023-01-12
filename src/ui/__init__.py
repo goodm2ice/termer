@@ -130,7 +130,7 @@ class TermerApp(ctk.CTk):
             self.__draw_mode_selector()
             self.__draw_count_input()
             self.__draw_control_btns(make_open_toplevel)
-            
+
             self.result_btn = ctk.CTkButton(self, text='Создать выборку', command=make_open_toplevel('result'), state='disabled', font=self.defaultFont)
             self.result_btn.pack(fill=ctk.X, padx = 10)
 
@@ -139,11 +139,12 @@ class TermerApp(ctk.CTk):
     result_window = None
 
     def make_open_toplevel(self, name: str):
-        match name:
-            case 'result': return self.__calculate_result
-            case 'section_control': return self.__open_section_control
-            case 'term_control': return self.__open_term_control
-            case _: return None
+        if name == 'result':
+            return self.__calculate_result
+        elif name == 'section_control':
+            return self.__open_section_control
+        elif name == 'term_control':
+            return self.__open_term_control
 
     def __on_data_changed(self):
         section_ids = self.left_part.get_selected_sections()
@@ -182,9 +183,10 @@ class TermerApp(ctk.CTk):
 
         where = Term.section_id << section_ids
 
-        match mode:
-            case 1: where &= Term.description.is_null(False)
-            case 2: where &= Term.image.is_null(False)
+        if mode == 1:
+            where &= Term.description.is_null(False)
+        elif mode == 2:
+            where &= Term.image.is_null(False)
 
         terms: List[Term] = Term.select().where(where).order_by(fn.random()).limit(count).execute()
 

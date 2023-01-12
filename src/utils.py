@@ -19,7 +19,7 @@ def blob_to_image(blob, max_width: Optional[int] = None, max_height: Optional[in
 
 
 T = TypeVar('T')
-def find(arr: List[T], expression: Callable[[T, int, List[T]], bool]) -> T | None:
+def find(arr: List[T], expression: Callable[[T, int, List[T]], bool]):
     for i, elm in enumerate(arr):
         if expression(elm, i, arr):
             return elm

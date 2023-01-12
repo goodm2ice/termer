@@ -20,7 +20,7 @@ class TermControllWindow(ctk.CTkToplevel):
         section_caption = self.section_box.get()
 
         section = None
-        
+
         try:
             section = TextbookSection.get(TextbookSection.caption == section_caption)
         except:

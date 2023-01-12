@@ -18,8 +18,25 @@ CUSTOM_TKINTER="$PWD/venv/Lib/site-packages/customtkinter;customtkinter/"
 mkdir $PWD/build
 rm -rf $PWD/build/*
 
-pyinstaller --noconfirm --onedir --distpath $TMP_APP --workpath $TMP_WP --specpath $TMP --add-data $CUSTOM_TKINTER $ENTRY_POINT --clean --console
-zip $BLD_DBG $TMP_OUT
+buildProject() {
+    BUILD_DIR=$1
+    INSTALLER_PATH=$2
+    SHOW_CONSOLE=$3
+    PARAMS=()
+    if $SHOW_CONSOLE; then
+        $PARAMS+=( --console )
+    else
+        $PARAMS+=( --window )
+    fi
+    pyinstaller --noconfirm --onedir --distpath $TMP_APP --workpath $TMP_WP --specpath $TMP --add-data $CUSTOM_TKINTER $ENTRY_POINT --clean "${PARAMS[@]}"
+    mv $TMP_OUT $BUILD_DIR
+    zip $BUILD_DIR "$BUILD_DIR.zip"
+    cp $INSTALLER_PATH "$TMP\make_installer.nsi"
+    sed -i -e "s/@VERSION@/$VERSION/g" "$TMP\make_installer.nsi"
+    makensis "$TMP\make_installer.nsi"
+    rm -rf $BUILD_DIR
+    rm "$TMP\make_installer.nsi"
+}
 
 pyinstaller --noconfirm --onedir --distpath $TMP_APP --workpath $TMP_WP --specpath $TMP --add-data $CUSTOM_TKINTER $ENTRY_POINT --clean --noconsole
 zip $BLD_PRD $TMP_OUT

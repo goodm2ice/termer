@@ -1,6 +1,8 @@
 from configparser import ConfigParser
 from pathlib import Path
 
+VERSION = 'v0.1.0'
+
 
 PROG_DIR = Path.home().joinpath('Documents/goodmice/Termer')
 DB_PATH = str(PROG_DIR.joinpath('termer_data.db'))

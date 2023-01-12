@@ -5,7 +5,7 @@ from typing import List, Tuple
 from peewee import fn
 from shutil import make_archive
 
-from config import Config, PROG_DIR
+from config import Config, PROG_DIR, VERSION
 from db import TextbookSection, Term
 from .result_window import ResultWindow
 from .section_control_window import SectionControllWindow
@@ -201,7 +201,7 @@ class TermerApp(ctk.CTk):
         self.defaultFont = ctk.CTkFont(family='JetBrains Mono', size=13)
         self.headerFont = ctk.CTkFont(family='JetBrains Mono', size=15)
 
-        self.title('Termer - основное окно')
+        self.title(f'Termer {VERSION} - основное окно')
         self.geometry('800x600')
 
         self.left_part = TermerApp.SectionFrame(self, self.__on_options_changed)

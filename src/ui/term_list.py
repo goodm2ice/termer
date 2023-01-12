@@ -6,11 +6,12 @@ from db import Term
 
 class TermList(ctk.CTkFrame):
     __item_boxes: List[ctk.CTkFrame] = []
+    no_term_label = None
 
     def __first_draw(self, terms: List[Term]):
         if not terms or len(terms) <= 0:
-            label = ctk.CTkLabel(self, text='Терминов нет!', font=self.defaultFont)
-            label.pack(expand=True)
+            self.no_term_label = ctk.CTkLabel(self, text='Терминов нет!', font=self.defaultFont)
+            self.no_term_label.pack(expand=True)
         else:
             for term in terms:
                 item_frame = ctk.CTkFrame(self)
@@ -36,9 +37,12 @@ class TermList(ctk.CTkFrame):
         while len(self.__item_boxes) > 0:
             self.__item_boxes.pop().destroy()
         if not terms or len(terms) <= 0:
-            label = ctk.CTkLabel(self, text='Терминов нет!', font=self.defaultFont)
-            label.pack(expand=True)
+            self.no_term_label = ctk.CTkLabel(self, text='Терминов нет!', font=self.defaultFont)
+            self.no_term_label.pack(expand=True)
         else:
+            if self.no_term_label:
+                self.no_term_label.destroy()
+                self.no_term_label = None
             for term in terms:
                 item_frame = ctk.CTkFrame(self)
                 if term.term_id == selected_id:

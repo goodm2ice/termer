@@ -14,7 +14,6 @@ def blob_to_image(blob, max_width: Optional[int] = None, max_height: Optional[in
         size = (max_width, int(max_width / k))
     if (type(max_height) == int and max_height > 0) and (not size or size[1] > max_height):
         size = (int(max_height * k), max_height)
-    if size: img.resize(size)
 
     return CTkImage(dark_image=img, size=size)
 

@@ -1,9 +1,11 @@
 import customtkinter as ctk
 from tkinter.messagebox import showwarning
+from tkinter.filedialog import asksaveasfilename
 from typing import List, Tuple
 from peewee import fn
+from shutil import make_archive
 
-from config import Config
+from config import Config, PROG_DIR
 from db import TextbookSection, Term
 from .result_window import ResultWindow
 from .section_control_window import SectionControllWindow
@@ -58,10 +60,10 @@ class TermerApp(ctk.CTk):
 
         def __init__(self, master, action_handler):
             super().__init__(master)
-            self.defaultFont = master.defaultFont
+            self.defaultFont = getattr(master, 'defaultFont', None)
             self.action_handler = action_handler
 
-            label = ctk.CTkLabel(self, text='Выбор разделов', font=master.headerFont)
+            label = ctk.CTkLabel(self, text='Выбор разделов', font=getattr(master, 'headerFont', None))
             label.pack(fill=ctk.X, side=ctk.TOP)
             self.draw_section_list()
             self.__draw_section_btns()
@@ -102,21 +104,27 @@ class TermerApp(ctk.CTk):
             self.count_input.pack(side=ctk.RIGHT, padx=5)
             frame.pack(fill=ctk.X, padx=10, pady=10)
 
+        def __on_export_click(self):
+            newfile = asksaveasfilename(filetypes=[('Архив данных', '*.zip')], initialfile='termer_data')
+            if not newfile: return
+            make_archive(newfile, 'zip', PROG_DIR)
         def __draw_control_btns(self, make_open_toplevel):
 
             section_control_btn = ctk.CTkButton(self, text='База категорий', command=make_open_toplevel('section_control'), font=self.defaultFont)
             term_control_btn = ctk.CTkButton(self, text='База терминов', command=make_open_toplevel('term_control'), font=self.defaultFont)
+            export_btn = ctk.CTkButton(self, text='Экспорт базы', command=self.__on_export_click, font=self.defaultFont)
 
             section_control_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=(0, 10))
-            term_control_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
+            term_control_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=(0, 10))
+            export_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
 
         def __init__(self, master, make_open_toplevel):
             super().__init__(master)
-            self.defaultFont = master.defaultFont
+            self.defaultFont = getattr(master, 'defaultFont', None)
             self.__mode = ctk.IntVar(master, 0)
             self.__count = ctk.StringVar(master, '5')
 
-            label = ctk.CTkLabel(self, text='Настройка выборки', font=master.headerFont)
+            label = ctk.CTkLabel(self, text='Настройка выборки', font=getattr(master, 'headerFont', None))
             label.pack(fill=ctk.X)
 
             self.__draw_mode_selector()
@@ -172,9 +180,13 @@ class TermerApp(ctk.CTk):
             showwarning('Termer - Операция невозможна!', 'Указано неверное кол-во терминов!')
             return
 
-        terms: List[Term] = Term.select().where(
-            (Term.section_id << section_ids) & Term.image.is_null(False)
-        ).order_by(fn.random()).limit(count).execute()
+        where = Term.section_id << section_ids
+
+        match mode:
+            case 1: where &= Term.description.is_null(False)
+            case 2: where &= Term.image.is_null(False)
+
+        terms: List[Term] = Term.select().where(where).order_by(fn.random()).limit(count).execute()
 
         if not terms or len(terms) <= 0:
             showwarning('Termer - Операция невозможна!', 'По заданым критериям терминов не найдено!')

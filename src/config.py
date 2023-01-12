@@ -2,6 +2,11 @@ from configparser import ConfigParser
 from pathlib import Path
 
 
+PROG_DIR = Path.home().joinpath('Documents/goodmice/Termer')
+DB_PATH = str(PROG_DIR.joinpath('termer_data.db'))
+CFG_PATH = str(PROG_DIR.joinpath('config.ini'))
+
+
 class Config:
     def __init__(self, path: str, default_db_path: str) -> None:
         self.__edit_password = '6437' # Пароль по-умолчанию

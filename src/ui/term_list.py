@@ -64,15 +64,18 @@ class TermList(ctk.CTkFrame):
     def __init__(self, master, terms: List[Term], on_select = None, on_remove_click = None, font = None, **kwargs):
         super().__init__(master, **kwargs)
         self.defaultFont = font
+
         def make_on_select(term):
             def __on_select(_):
-                on_select(term)
+                if on_select: on_select(term)
             return __on_select
 
         def make_on_remove(term):
             def __on_remove():
-                on_remove_click(term)
+                if on_remove_click: on_remove_click(term)
             return __on_remove
+
         self.make_on_select = make_on_select
         self.make_on_remove_click = make_on_remove
+
         self.__first_draw(terms)

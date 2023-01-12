@@ -3,7 +3,7 @@ from typing import List
 from tkinter.filedialog import askopenfile
 
 from db import Term, TextbookSection
-from utils import blob_to_image
+from utils import blob_to_image, find
 
 from .term_list import TermList
 
@@ -67,7 +67,7 @@ class TermControllWindow(ctk.CTkToplevel):
         terms: List[Term] = Term.select().order_by(Term.caption.desc()).execute()
         selected_term = None
         if terms and self.selected_id is not None:
-            selected_term = next((term for term in terms if term.term_id == self.selected_id), None)
+            selected_term = find(terms, lambda elm: elm.term_id == self.selected_id)
             if not selected_term:
                 self.selected_id = None
 
@@ -145,7 +145,8 @@ class TermControllWindow(ctk.CTkToplevel):
     def __init__(self, master, on_update, geometry = '1000x600'):
         super().__init__(master)
         self.sections = TextbookSection.select().order_by(TextbookSection.caption.desc()).execute() or []
-        self.defaultFont = master.defaultFont
+        if 'defaultFont' in master:
+            self.defaultFont = master.defaultFont
         self.title('Termer - Окно управления разделами')
         self.geometry(geometry)
 

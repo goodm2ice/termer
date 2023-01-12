@@ -107,11 +107,8 @@ class TermerApp(ctk.CTk):
             section_control_btn = ctk.CTkButton(self, text='База категорий', command=make_open_toplevel('section_control'), font=self.defaultFont)
             term_control_btn = ctk.CTkButton(self, text='База терминов', command=make_open_toplevel('term_control'), font=self.defaultFont)
 
-            # section_control_btn.grid(row=0, column=0, padx=10, pady=(0, 5))
-            # term_control_btn.grid(row=1, column=0, padx=10, pady=(5, 0))
             section_control_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=(0, 10))
             term_control_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
-            # frame.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
 
         def __init__(self, master, make_open_toplevel):
             super().__init__(master)
@@ -119,7 +116,7 @@ class TermerApp(ctk.CTk):
             self.__mode = ctk.IntVar(master, 0)
             self.__count = ctk.StringVar(master, '5')
 
-            label = ctk.CTkLabel(self, text='Настройка выборки', font=master.headerFont) # TODO: Сделать заголовки крупнее
+            label = ctk.CTkLabel(self, text='Настройка выборки', font=master.headerFont)
             label.pack(fill=ctk.X)
 
             self.__draw_mode_selector()

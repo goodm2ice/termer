@@ -16,6 +16,14 @@ class Config:
         else:
             self.reload()
 
+    def reload(self):
+        config = ConfigParser()
+        config.read(self.path)
+        self.__edit_password = config.get('DEFAULT', 'EditPassword', fallback=self.__edit_password)
+        self.__db_path = config.get('DEFAULT', 'DbPath', fallback=self.__db_path)
+        self.__appearance_mode = config.get('Appearance', 'Mode', fallback=self.__appearance_mode)
+        self.__color_theme = config.get('Appearance', 'ColorTheme', fallback=self.__color_theme)
+
     def __save(self):
         config = ConfigParser()
         config['DEFAULT'] = {
@@ -29,14 +37,6 @@ class Config:
 
         with open(self.path, 'w') as file:
             config.write(file)
-
-    def reload(self):
-        config = ConfigParser()
-        config.read(self.path)
-        self.__edit_password = config.get('DEFAULT', 'EditPassword', fallback=self.__edit_password)
-        self.__db_path = config.get('DEFAULT', 'DbPath', fallback=self.__db_path)
-        self.__appearance_mode = config.get('Appearance', 'Mode', fallback=self.__appearance_mode)
-        self.__color_theme = config.get('Appearance', 'ColorTheme', fallback=self.__color_theme)
 
     @property
     def edit_password(self):

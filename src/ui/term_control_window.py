@@ -1,8 +1,9 @@
 import customtkinter as ctk
 from typing import List
-from tkinter.filedialog import askopenfile
+from tkinter.filedialog import askopenfile, askopenfilename
 
 from db import Term, TextbookSection
+from import_export import import_csv_terms
 from utils import blob_to_image, find
 
 from .term_list import TermList
@@ -58,7 +59,7 @@ class TermControllWindow(ctk.CTkToplevel):
 
     def redraw_image(self):
         if not self.image_data:
-            self.image_box.configure(image=None, text='Нет изображения!')
+            self.image_box.configure(image='', text='Нет изображения!')
         else:
             img = blob_to_image(self.image_data)
             self.image_box.configure(image=img, text='')
@@ -113,6 +114,13 @@ class TermControllWindow(ctk.CTkToplevel):
             file.close()
         self.redraw_image()
 
+    def __on_import_click(self):
+        filename = askopenfilename(filetypes=[('CSV', '*.csv')])
+        if import_csv_terms(filename):
+            self.redraw()
+            if self.on_update:
+                self.on_update()
+
     def __draw_term_info(self):
         frame = ctk.CTkFrame(self)
 
@@ -130,13 +138,15 @@ class TermControllWindow(ctk.CTkToplevel):
         self.image_box.bind('<Button-1>', self.__on_image_click)
         add_btn = ctk.CTkButton(right_frame, text='Добавить', font=self.defaultFont, command=self.__on_add_click)
         edit_btn = ctk.CTkButton(right_frame, text='Обновить', font=self.defaultFont, command=self.__on_edit_click)
+        import_btn = ctk.CTkButton(right_frame, text='Импорт CSV', font=self.defaultFont, command=self.__on_import_click)
 
-        self.description_field.pack(side=ctk.LEFT, fill=ctk.BOTH, padx=10, pady=10, expand=True)
+        self.description_field.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True)
         self.image_box.pack(side=ctk.TOP, fill=ctk.Y, padx=10, pady=10, expand=True)
-        add_btn.pack(side=ctk.BOTTOM, padx=10, pady=10)
-        edit_btn.pack(side=ctk.BOTTOM, padx=10)
+        add_btn.pack(side=ctk.BOTTOM, padx=10, pady=(10, 0))
+        edit_btn.pack(side=ctk.BOTTOM, padx=10, pady=(10, 0))
+        import_btn.pack(side=ctk.BOTTOM, padx=10, pady=0)
         self.section_box.pack(side=ctk.BOTTOM, padx=10, pady=10)
-        right_frame.pack(side=ctk.RIGHT, fill=ctk.Y, padx=10, pady=10)
+        right_frame.pack(side=ctk.RIGHT, fill=ctk.Y, padx=(10, 0))
 
         self.term_caption_field.pack(side=ctk.TOP, fill=ctk.X, padx=10, pady=10)
         bottom_frame.pack(side=ctk.BOTTOM, fill=ctk.BOTH, padx=10, pady=10, expand=True)

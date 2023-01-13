@@ -1,11 +1,34 @@
 import customtkinter as ctk
+from tkinter.filedialog import askopenfilename
 
 from db import TextbookSection
+from import_export import import_csv_sections
 
 
 class SectionControllWindow(ctk.CTkToplevel):
     section_boxes = []
     section_list = None
+
+    def __make_on_remove(self, section):
+        def on_remove():
+            section.delete_instance()
+            self.draw_section_list()
+            self.on_update()
+
+        return on_remove
+
+    def __make_on_save(self, section, var):
+        def on_save():
+            nval = var.get().strip()
+            if nval == '':
+                return
+            section.section_id = section.section_id
+            section.caption = nval
+            section.save()
+            self.draw_section_list()
+            self.on_update()
+
+        return on_save
 
     def draw_section_list(self):
         if self.section_list:
@@ -25,25 +48,10 @@ class SectionControllWindow(ctk.CTkToplevel):
                 frame = ctk.CTkFrame(self.section_list)
                 var = ctk.StringVar(frame, section.caption)
 
-                def save():
-                    nval = var.get().strip()
-                    if nval == '':
-                        return
-                    section.section_id = section.section_id
-                    section.caption = nval
-                    section.save()
-                    self.draw_section_list()
-                    self.on_update()
-
-                def remove():
-                    section.delete_instance()
-                    self.draw_section_list()
-                    self.on_update()
-
                 entry = ctk.CTkEntry(frame, textvariable=var, font=self.defaultFont)
 
-                save_btn = ctk.CTkButton(frame, width=100, text='Сохранить', command=save, fg_color='#FFAD33', hover_color='#C88A2F', font=self.defaultFont)
-                remove_btn = ctk.CTkButton(frame, width=100, text='Удалить', command=remove, fg_color='#D7324C', hover_color='#FF516D', font=self.defaultFont)
+                save_btn = ctk.CTkButton(frame, width=100, text='Сохранить', command=self.__make_on_save(section, var), fg_color='#FFAD33', hover_color='#C88A2F', font=self.defaultFont)
+                remove_btn = ctk.CTkButton(frame, width=100, text='Удалить', command=self.__make_on_remove(section), fg_color='#D7324C', hover_color='#FF516D', font=self.defaultFont)
 
                 self.section_boxes.append((section.section_id, var, entry))
 
@@ -63,6 +71,13 @@ class SectionControllWindow(ctk.CTkToplevel):
         self.draw_section_list()
         self.on_update()
 
+    def __on_import_click(self):
+        filename = askopenfilename(filetypes=[('CSV', '*.csv')])
+        if import_csv_sections(filename):
+            self.draw_section_list()
+            if self.on_update:
+                self.on_update()
+
     def __init__(self, master, on_update, geometry = '700x600'):
         super().__init__(master)
         self.defaultFont = getattr(master, 'defaultFont', None)
@@ -73,5 +88,8 @@ class SectionControllWindow(ctk.CTkToplevel):
 
         self.draw_section_list()
 
+        self.import_btn = ctk.CTkButton(self, text='Импортировать CSV', command=self.__on_import_click, font=self.defaultFont)
+        self.import_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=10)
+
         self.add_btn = ctk.CTkButton(self, text='Добавить новый раздел', command=self.__add_new_category, font=self.defaultFont)
-        self.add_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=(0, 10))
+        self.add_btn.pack(side=ctk.BOTTOM, fill=ctk.X, padx=10, pady=0)

@@ -3,10 +3,10 @@ from tkinter.messagebox import showwarning
 from tkinter.filedialog import asksaveasfilename
 from typing import List, Tuple
 from peewee import fn
-from shutil import make_archive
 
-from config import Config, PROG_DIR, VERSION
+from config import Config, VERSION
 from db import TextbookSection, Term
+from import_export import export_data
 from .result_window import ResultWindow
 from .section_control_window import SectionControllWindow
 from .term_control_window import TermControllWindow
@@ -106,8 +106,8 @@ class TermerApp(ctk.CTk):
 
         def __on_export_click(self):
             newfile = asksaveasfilename(filetypes=[('Архив данных', '*.zip')], initialfile='termer_data')
-            if not newfile: return
-            make_archive(newfile, 'zip', PROG_DIR)
+            export_data(newfile)
+
         def __draw_control_btns(self, make_open_toplevel):
 
             section_control_btn = ctk.CTkButton(self, text='База категорий', command=make_open_toplevel('section_control'), font=self.defaultFont)

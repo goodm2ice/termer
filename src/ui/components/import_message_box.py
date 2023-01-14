@@ -29,8 +29,8 @@ class ImportMessageBox(CTkToplevel):
             title = 'Импорт файла',
             prompt = 'Выберите файл и кодировку для импорта',
             filetypes = [('CSV', '*.csv')],
-            encodings = ['utf-8', 'cp1252'],
-            default_encoding = 'cp1252'
+            encodings = ['utf-8', 'cp1251'],
+            default_encoding = 'cp1251'
         ) -> None:
         super().__init__(master)
         self.on_ok = on_ok

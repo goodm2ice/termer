@@ -10,7 +10,7 @@ from .term_list import TermList
 from .components.import_message_box import ImportMessageBox
 
 
-class TermControllWindow(ctk.CTkToplevel):
+class TermControlWindow(ctk.CTkToplevel):
     term_list_frame = None
     selected_id: int = None
     term_items: List[ctk.CTkFrame] = [] # Массив элементов списка
@@ -160,7 +160,7 @@ class TermControllWindow(ctk.CTkToplevel):
     def __init__(self, master, on_update, geometry = '1000x600'):
         super().__init__(master)
         self.defaultFont = getattr(master, 'defaultFont', None)
-        self.title('Termer - Окно управления разделами')
+        self.title('Termer - Окно управления терминами')
         self.geometry(geometry)
 
         self.on_update = on_update

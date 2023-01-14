@@ -8,8 +8,8 @@ from config import Config, VERSION
 from db import TextbookSection, Term
 from import_export import export_data
 from .result_window import ResultWindow
-from .section_control_window import SectionControllWindow
-from .term_control_window import TermControllWindow
+from .section_control_window import SectionControlWindow
+from .term_control_window import TermControlWindow
 
 
 class TermerApp(ctk.CTk):
@@ -165,12 +165,12 @@ class TermerApp(ctk.CTk):
     def __open_section_control(self):
         if self.section_control:
             self.section_control.destroy()
-        self.section_control = SectionControllWindow(self, self.__on_data_changed)
+        self.section_control = SectionControlWindow(self, self.__on_data_changed)
 
     def __open_term_control(self):
         if self.term_control:
             self.term_control.destroy()
-        self.term_control = TermControllWindow(self, self.__on_data_changed)
+        self.term_control = TermControlWindow(self, self.__on_data_changed)
 
     def __calculate_result(self):
         section_ids = self.left_part.get_selected_sections()

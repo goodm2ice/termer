@@ -28,7 +28,7 @@ class ImportMessageBox(CTkToplevel):
             on_ok,
             title = 'Импорт файла',
             prompt = 'Выберите файл и кодировку для импорта',
-            filetypes = [('CSV', '*.csv')],
+            filetypes = [('Файл таблицы', '*.csv;*.xls;*.xlsx;*.xlsm;*.xlsb;*.odf;*.ods;*.odt')],
             encodings = ['utf-8', 'cp1251'],
             default_encoding = 'cp1251'
         ) -> None:

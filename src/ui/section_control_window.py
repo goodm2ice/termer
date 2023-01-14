@@ -6,7 +6,7 @@ from import_export import import_csv_sections
 from .components.import_message_box import ImportMessageBox
 
 
-class SectionControllWindow(ctk.CTkToplevel):
+class SectionControlWindow(ctk.CTkToplevel):
     section_boxes = []
     section_list = None
 

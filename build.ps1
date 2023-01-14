@@ -5,7 +5,7 @@ python -m venv venv
 Invoke-Expression -Command "$DIR\venv\Scripts\activate.ps1"
 pip install -r "$DIR\requirements.txt"
 
-$VERSION = 'v0.2.1a'
+$VERSION = 'v0.2.3'
 $NAME = 'Termer'
 $ENTRY_POINT = "$DIR\src\main.py"
 $TMP = "$DIR\tmp"

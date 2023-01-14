@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 from pathlib import Path
 
-VERSION = 'v0.2.0'
+VERSION = 'v0.2.1'
 
 
 PROG_DIR = Path.home().joinpath('Documents/goodmice/Termer')

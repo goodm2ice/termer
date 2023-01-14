@@ -4,6 +4,7 @@ python -m venv venv
 $PWD/venv/Scripts/activate
 pip install -r $PWD/requirements.txt
 
+VERSION='v0.2.1'
 NAME=termer
 ENTRY_POINT=$PWD/main.py
 TMP=$PWD/tmp

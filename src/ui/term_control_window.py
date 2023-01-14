@@ -1,12 +1,13 @@
 import customtkinter as ctk
 from typing import List
-from tkinter.filedialog import askopenfile, askopenfilename
+from tkinter.filedialog import askopenfile
 
 from db import Term, TextbookSection
 from import_export import import_csv_terms
 from utils import blob_to_image, find
 
 from .term_list import TermList
+from .components.import_message_box import ImportMessageBox
 
 
 class TermControllWindow(ctk.CTkToplevel):
@@ -115,11 +116,15 @@ class TermControllWindow(ctk.CTkToplevel):
         self.redraw_image()
 
     def __on_import_click(self):
-        filename = askopenfilename(filetypes=[('CSV', '*.csv')])
-        if import_csv_terms(filename):
-            self.redraw()
-            if self.on_update:
-                self.on_update()
+        def on_ok(filename, encoding):
+            if import_csv_terms(filename, encoding):
+                self.redraw()
+                if self.on_update:
+                    self.on_update()
+
+        if hasattr(self, '__import_box') and self.__import_box:
+            self.__import_box.destroy()
+        self.__import_box = ImportMessageBox(self, on_ok)
 
     def __draw_term_info(self):
         frame = ctk.CTkFrame(self)

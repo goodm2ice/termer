@@ -1,8 +1,9 @@
 import customtkinter as ctk
-from tkinter.filedialog import askopenfilename
 
 from db import TextbookSection
 from import_export import import_csv_sections
+
+from .components.import_message_box import ImportMessageBox
 
 
 class SectionControllWindow(ctk.CTkToplevel):
@@ -72,11 +73,15 @@ class SectionControllWindow(ctk.CTkToplevel):
         self.on_update()
 
     def __on_import_click(self):
-        filename = askopenfilename(filetypes=[('CSV', '*.csv')])
-        if import_csv_sections(filename):
-            self.draw_section_list()
-            if self.on_update:
-                self.on_update()
+        def on_ok(filename, encoding):
+            if import_csv_sections(filename, encoding):
+                self.draw_section_list()
+                if self.on_update:
+                    self.on_update()
+
+        if hasattr(self, '__import_box') and self.__import_box:
+            self.__import_box.destroy()
+        self.__import_box = ImportMessageBox(self, on_ok)
 
     def __init__(self, master, on_update, geometry = '700x600'):
         super().__init__(master)

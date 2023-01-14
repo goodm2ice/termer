@@ -15,10 +15,10 @@ def export_data(path: str) -> None:
     make_archive(path, 'zip', PROG_DIR)
 
 
-def import_csv_sections(path: str) -> bool:
+def import_csv_sections(path: str, encoding = 'utf-8') -> bool:
     if not path or path == '': return False
     data = None
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, 'r', encoding=encoding) as f:
         reader = csv.reader(f)
         next(reader, None)
         data = [{ 'caption': x[0] } for x in reader]
@@ -27,10 +27,10 @@ def import_csv_sections(path: str) -> bool:
     return True
 
 
-def import_csv_terms(path: str) -> bool:
+def import_csv_terms(path: str, encoding = 'utf-8') -> bool:
     if not path or path == '': return False
     data = None
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, 'r', encoding=encoding) as f:
         reader = csv.reader(f)
         next(reader, None)
         data = [tuple(x) for x in reader if len(x) > 0]
